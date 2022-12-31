@@ -16,15 +16,12 @@ class Target():
         self.v = v
         self.set_ra(r, a)
 
-        self.FADING_RATE = 0.99
-        self.alpha = 0
-
         self.noises = self.gen_noise()
 
     def gen_noise(self):
         noises = []
         N = np.random.randint(low=5, high=10 + 1)
-        R = 8
+        R = 5
         for i in range(N):
             noise = Noise(0, 0, self.dir, self.v)
             dx = np.random.randn() * R
@@ -48,4 +45,3 @@ class Target():
     def update(self):
         dx, dy = rphi_to_xy(self.v, self.dir)
         self.set_xy(self.x + dx, self.y + dy)
-        self.alpha *= self.FADING_RATE

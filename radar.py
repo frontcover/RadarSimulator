@@ -6,24 +6,31 @@ class Radar(QWidget):
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self.current_a = 0
-        self.SPEED_A = 2
+        self.SPEED_A = 0.1
         self.R_MAX = 250
         self.width = 500
         self.height = 500
         self.center = (250, 250)
+        self.signals = []
 
     def tick(self):
         self.old_w = self.current_a
         self.current_a = (self.current_a + self.SPEED_A) % 360
+        
+        # Remove old weak signal
+        self.signals = list(filter(lambda signal: signal.alpha > 0.01, self.signals))
 
+        # Scan for signals
         for target in self.parent().targets:
             if self.old_w <= target.a <= self.current_a:
-                target.alpha = 1
+                signal = Signal(target.x, target.y)
+                self.signals.append(signal)
             target.update()
 
             for noise in target.noises:
                 if self.old_w <= noise.a <= self.current_a:
-                    noise.alpha = 1
+                    signal = Signal(noise.x, noise.y)
+                    self.signals.append(signal)
                 noise.update()
         self.update()
 
@@ -51,20 +58,24 @@ class Radar(QWidget):
         painter.setPen(QtGui.QColor(0, 255, 0))
         painter.drawLine(self.center[0], self.center[1], self.center[0] + p2[0], self.center[0] + p2[1])
 
-        # Draw targets and noises
-        for target in self.parent().targets:
-            # Draw target
-            painter.setPen(QtGui.QColor(0, 255, 0, 255 * target.alpha))
-            painter.drawRect(self.center[0] + target.x, self.center[1] + target.y, 3, 3)
-
-            # Draw it's noises
-            for noise in target.noises:
-                painter.setPen(QtGui.QColor(0, 255, 0, 255 * noise.alpha))
-                painter.drawRect(self.center[0] + noise.x, self.center[1] + noise.y, 1, 1)
-
+        # Draw signals
+        for signal in self.signals:
+            painter.setPen(QtGui.QColor(0, 255, 0, 255 * signal.alpha))
+            painter.drawRect(self.center[0] + signal.x, self.center[1] + signal.y, 1, 1)
+            signal.update()
 
         return super().paintEvent(a0)
 
     def mousePressEvent(self, a0: QtGui.QMouseEvent) -> None:
         print(a0.pos())
         return super().mousePressEvent(a0)
+
+class Signal():
+    def __init__(self, x, y) -> None:
+        self.x = x
+        self.y = y
+        self.alpha = 1
+        self.FADING_RATE = 0.999
+
+    def update(self):
+        self.alpha *= self.FADING_RATE

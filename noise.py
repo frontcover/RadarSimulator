@@ -14,9 +14,6 @@ class Noise():
         self.v = v
         self.set_ra(r, a)
 
-        self.FADING_RATE = 0.99
-        self.alpha = 0
-
     def set_xy(self, x, y):
         self.x = x
         self.y = y
@@ -32,4 +29,3 @@ class Noise():
     def update(self):
         dx, dy = rphi_to_xy(self.v, self.dir)
         self.set_xy(self.x + dx, self.y + dy)
-        self.alpha *= self.FADING_RATE
