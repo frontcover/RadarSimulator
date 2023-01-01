@@ -20,12 +20,12 @@ class Target():
 
     def gen_noise(self):
         noises = []
-        N = np.random.randint(low=5, high=10 + 1)
-        R = 5
+        N = np.random.randint(low=20, high=30)
+        R = 4
         for i in range(N):
             noise = Noise(0, 0, self.dir, self.v)
             dx = np.random.randn() * R
-            dy = np.random.rand() * R
+            dy = np.random.randn() * R
             noise.set_xy(self.x + dx, self.y + dy)
             noises.append(noise)
         return noises

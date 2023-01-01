@@ -13,7 +13,6 @@ class MainScreen(QMainWindow):
         self.stui = []
         self.setup_stui()
         self.targets = [None, None, None, None]
-        
         self.cfar_on = False
         self.uic.checkBox.stateChanged.connect(self.toggle_cfar)
 
