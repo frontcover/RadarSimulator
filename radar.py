@@ -3,12 +3,14 @@ from PyQt5 import QtCore, QtGui
 from utils.helper import rphi_to_xy, dist, xy_to_rphi
 import numpy as np
 from noise import Noise
+from constant import R_MAX, CENTER_GROUND_RADIUS
 
 WIDTH = 600
 HEIGHT = 600
 CENTER_X = WIDTH // 2
 CENTER_Y = HEIGHT // 2
-R_MAX = 250
+
+SCALE = 2.5
 SIGNAL_PARTICLE_BASE_SIZE = 3
 SIGNAL_POWER_FOR_TARGET = 1
 SIGNAL_POWER_FOR_NOISE = 0.1
@@ -18,11 +20,18 @@ PICKING_DISTANCE_THRESHOLD = 30
 
 def P(x, y):
     """
-    Apply reference system
+    Apply reference system for x, y (for painting)
     """
-    x = CENTER_X + x
-    y = CENTER_Y - y
+    x = CENTER_X + SCALE * x
+    y = CENTER_Y - SCALE * y
     return x, y
+
+def R(r):
+    """
+    Apply reference system for radius (for painting)
+    """
+    return SCALE * r
+
 
 class Radar(QWidget):
     def __init__(self, parent) -> None:
@@ -35,8 +44,8 @@ class Radar(QWidget):
     def gen_noises(self):
         noises = []
         N = 1000
-        X = np.random.uniform(-WIDTH / 2, WIDTH / 2, size=N)
-        Y = np.random.uniform(-HEIGHT / 2, HEIGHT / 2, size=N)
+        X = np.random.uniform(-R_MAX, R_MAX, size=N)
+        Y = np.random.uniform(-R_MAX, R_MAX, size=N)
         Dir = np.random.randint(0, 360, size=N)
         V = np.random.randn(N) * 0.01
         for i in range(N):
@@ -99,28 +108,31 @@ class Radar(QWidget):
 
         # Draw background
         painter.setBrush(QtGui.QColor(0, 0, 0))
-        painter.drawEllipse(QtCore.QPointF(*P(0, 0)), R_MAX, R_MAX)
+        painter.drawEllipse(QtCore.QPointF(*P(0, 0)), R(R_MAX), R(R_MAX))
 
-        # Draw landmark
+        # Draw ground
+        painter.setBrush(QtGui.QColor(0, 255, 0, 200))
+        painter.drawEllipse(QtCore.QPointF(*P(0, 0)), R(CENTER_GROUND_RADIUS), R(CENTER_GROUND_RADIUS))
 
+        ## Draw landmark
+        # Draw azimuth landmark
         painter.setPen(QtGui.QColor(127, 127, 127))
         for phi in [0, 45, 90, 135, 180, 225, 270, 315]:
             p2 = rphi_to_xy(R_MAX, phi)
             x1, y1 = P(0, 0)
             x2, y2 = P(p2[0], p2[1])
             painter.drawLine(x1, y1, x2, y2)
-
+        # Draw azimuth marker
         painter.setPen(QtGui.QColor(0, 0, 0))
         for phi in np.arange(0, 360, 15):
-            # marker
-            p2 = rphi_to_xy(R_MAX + 20, phi)
-            x2, y2 = P(p2[0] - 8, p2[1] - 5)
+            p2 = rphi_to_xy(R_MAX + 8, phi)
+            x2, y2 = P(p2[0] - 4, p2[1] - 2)
             painter.drawText(x2, y2, f"{phi}")
-
+        # Draw radius landmark
         painter.setBrush(QtCore.Qt.NoBrush)
         painter.setPen(QtGui.QColor(127, 127, 127))
-        for r in [50, 100, 150, 200]:
-            painter.drawEllipse(QtCore.QPointF(*P(0, 0)), r, r)
+        for r in [25, 50, 75]:
+            painter.drawEllipse(QtCore.QPointF(*P(0, 0)), R(r), R(r))
 
         # Draw rotating line
         p2 = rphi_to_xy(R_MAX, self.current_a)
@@ -145,7 +157,7 @@ class Radar(QWidget):
             color = QtGui.QColor(255, 255, 0, 255 * tracking_box.alpha)
             painter.setPen(color)
             x, y = P(tracking_box.x - tracking_box.W // 2, tracking_box.y + tracking_box.H // 2)
-            w, h = tracking_box.W, tracking_box.H
+            w, h = R(tracking_box.W), R(tracking_box.H)
             painter.drawRect(x, y, w, h)
             tracking_box.update()
 
@@ -182,8 +194,8 @@ class TrackingBox():
     def __init__(self, x, y) -> None:
         self.x = x
         self.y = y
-        self.W = 30
-        self.H = 30
+        self.W = 10
+        self.H = 10
         self.alpha = 1
         self.FADING_RATE = 0.99
 

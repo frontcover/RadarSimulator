@@ -3,6 +3,7 @@ from ui.python.ui_main_screen import Ui_MainScreen
 from PyQt5 import QtCore, QtGui
 from target import Target
 import numpy as np
+from constant import R_MAX, CENTER_GROUND_RADIUS
 
 class MainScreen(QMainWindow):
     def __init__(self, navigator):
@@ -74,12 +75,24 @@ class MainScreen(QMainWindow):
             dir = float(self.stui[i]["dir"].text())
             v = float(self.stui[i]["v"].text())
             
+            ## Validate r, a, dir, v
+            # Validate r
+            if not (r > CENTER_GROUND_RADIUS and r < R_MAX):
+                raise Exception(f"Khoảng cách phải nằm trong khoảng ({CENTER_GROUND_RADIUS},{R_MAX})")
+            # Validate v
+            if v < 0:
+                raise Exception("Vận tốc không được âm")
+                      
             self.targets[i] = Target(r, a, dir, v)
             self.stui[i]["btn"].setDisabled(True)
+        except ValueError as e:
+            msg = QErrorMessage(self)
+            print(str(e))
+            msg.showMessage("Giá trị là số không hợp lệ")
         except Exception as e:
             msg = QErrorMessage(self)
             print(str(e))
-            msg.showMessage("Giá trị không hợp lệ")
+            msg.showMessage(str(e))
 
     def onclick_btn_create_1(self):
         self.onclick_btn_create(0)
