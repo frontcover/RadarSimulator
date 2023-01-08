@@ -3,7 +3,7 @@ from ui.python.ui_main_screen import Ui_MainScreen
 from PyQt5 import QtCore, QtGui
 from target import Target
 import numpy as np
-from constant import R_MAX, CENTER_GROUND_RADIUS
+from constant import R_MAX, CENTER_GROUND_RADIUS, TICK_INTERVAL
 
 class MainScreen(QMainWindow):
     def __init__(self, navigator):
@@ -20,7 +20,7 @@ class MainScreen(QMainWindow):
         self.tracking_target = None
 
         timer = QtCore.QTimer(self)
-        timer.setInterval(10)
+        timer.setInterval(TICK_INTERVAL)
         timer.timeout.connect(self.tick)
         timer.start()
 

@@ -1,13 +1,14 @@
 from utils.helper import rphi_to_xy, xy_to_rphi
+from constant import TICK_INTERVAL
 
 class Noise():
     def __init__(self, r, a, dir, v) -> None:
         """
         Params:
-            r: distance to radar
-            a: azimuth
-            dir: hướng di chuyển
-            v: vận tốc di chuyển
+            r: khoảng cách tới radar (đơn vị hải lý)
+            a: phương vị (đơn vị độ)
+            dir: hướng di chuyển (đơn vị độ)
+            v: vận tốc di chuyển (đơn vị hải lý/giờ)
         """
 
         self.dir = dir
@@ -26,6 +27,9 @@ class Noise():
         self.a = a % 360
         self.x, self.y = rphi_to_xy(r, a)
 
-    def update(self):
-        dx, dy = rphi_to_xy(self.v, self.dir)
+    def tick(self):
+        # self.v là vận tốc tính theo hải lý / giờ
+        # v_tick là vạn tốc tính theo hải lý / tick. 1 tick = TICK_INTERVAL ms
+        v_tick = self.v * 3.6e-6 * TICK_INTERVAL
+        dx, dy = rphi_to_xy(v_tick, self.dir)
         self.set_xy(self.x + dx, self.y + dy)

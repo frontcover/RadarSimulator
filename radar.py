@@ -3,20 +3,19 @@ from PyQt5 import QtCore, QtGui
 from utils.helper import rphi_to_xy, dist, xy_to_rphi
 import numpy as np
 from noise import Noise
-from constant import R_MAX, CENTER_GROUND_RADIUS
+from constant import R_MAX, CENTER_GROUND_RADIUS, TICK_INTERVAL, ROTATE_PERIOD
 
-WIDTH = 600
-HEIGHT = 600
+WIDTH = 500
+HEIGHT = 500
 CENTER_X = WIDTH // 2
 CENTER_Y = HEIGHT // 2
 
-SCALE = 2.5
+SCALE = 2.2
 SIGNAL_PARTICLE_BASE_SIZE = 3
 SIGNAL_POWER_FOR_TARGET = 1
 SIGNAL_POWER_FOR_NOISE = 0.1
 NOISE_RATIO = 0.1
-SCAN_SPEED = 1
-PICKING_DISTANCE_THRESHOLD = 30
+PICKING_DISTANCE_THRESHOLD = 10
 
 def P(x, y):
     """
@@ -36,7 +35,7 @@ def R(r):
 class Radar(QWidget):
     def __init__(self, parent) -> None:
         super().__init__(parent)
-        self.current_a = 0
+        self.a = 0
         self.signals = []
         self.noises = self.gen_noises()
         self.tracking_boxes = []
@@ -56,8 +55,8 @@ class Radar(QWidget):
         return noises
 
     def tick(self):
-        self.old_w = self.current_a
-        self.current_a = (self.current_a + SCAN_SPEED) % 360
+        delta_a = 360 * TICK_INTERVAL / ROTATE_PERIOD
+        self.a = (self.a + delta_a) % 360
         
         # Remove old weak signal
         self.signals = list(filter(lambda signal: signal.alpha > 0.1, self.signals))
@@ -70,7 +69,7 @@ class Radar(QWidget):
             if target == None: 
                 continue
 
-            if self.old_w <= target.a <= self.current_a and target.r <= R_MAX:
+            if self.a - delta_a <= target.a < self.a and target.r <= R_MAX:
                 p = SIGNAL_POWER_FOR_TARGET + np.random.randn() * NOISE_RATIO
                 signal = Signal(target.x, target.y, p)
                 self.signals.append(signal)
@@ -82,21 +81,21 @@ class Radar(QWidget):
                     self.parent().stui[index]['a'].setText(f"{target.a:.2f}")
                     self.parent().stui[index]['dir'].setText(f"{target.dir:.2f}")
                     self.parent().stui[index]['v'].setText(f"{target.v:.2f}")
-            target.update()
+            target.tick()
 
             for noise in target.noises:
-                if not self.parent().cfar_on and self.old_w <= noise.a <= self.current_a and noise.r <= R_MAX:
+                if not self.parent().cfar_on and self.a - delta_a <= noise.a < self.a and noise.r <= R_MAX:
                     p = SIGNAL_POWER_FOR_NOISE + np.random.randn() * NOISE_RATIO
                     signal = Signal(noise.x, noise.y, p)
                     self.signals.append(signal)
-                noise.update()
+                noise.tick()
 
         for noise in self.noises:
-            if not self.parent().cfar_on and self.old_w <= noise.a <= self.current_a and noise.r <= R_MAX:
+            if not self.parent().cfar_on and self.a - delta_a <= noise.a < self.a and noise.r <= R_MAX:
                 p = SIGNAL_POWER_FOR_NOISE + np.random.randn() * NOISE_RATIO
                 signal = Signal(noise.x, noise.y, p)
                 self.signals.append(signal)
-            noise.update()
+            noise.tick()
         
         self.update()
 
@@ -135,7 +134,7 @@ class Radar(QWidget):
             painter.drawEllipse(QtCore.QPointF(*P(0, 0)), R(r), R(r))
 
         # Draw rotating line
-        p2 = rphi_to_xy(R_MAX, self.current_a)
+        p2 = rphi_to_xy(R_MAX, self.a)
         painter.setPen(QtGui.QColor(0, 255, 0))
         x1, y1 = P(0, 0)
         x2, y2 = P(p2[0], p2[1])
@@ -149,7 +148,7 @@ class Radar(QWidget):
             x, y = P(signal.x, signal.y)
             s = signal.p * SIGNAL_PARTICLE_BASE_SIZE
             painter.drawEllipse(QtCore.QPointF(x, y), s, s)
-            signal.update()
+            signal.tick()
 
         # Draw tracking boxes
         painter.setBrush(QtCore.Qt.NoBrush)
@@ -159,7 +158,7 @@ class Radar(QWidget):
             x, y = P(tracking_box.x - tracking_box.W // 2, tracking_box.y + tracking_box.H // 2)
             w, h = R(tracking_box.W), R(tracking_box.H)
             painter.drawRect(x, y, w, h)
-            tracking_box.update()
+            tracking_box.tick()
 
         return super().paintEvent(a0)
 
@@ -187,7 +186,7 @@ class Signal():
         self.alpha = 1
         self.FADING_RATE = 0.99
 
-    def update(self):
+    def tick(self):
         self.alpha *= self.FADING_RATE
 
 class TrackingBox():
@@ -199,5 +198,5 @@ class TrackingBox():
         self.alpha = 1
         self.FADING_RATE = 0.99
 
-    def update(self):
+    def tick(self):
         self.alpha *= self.FADING_RATE
