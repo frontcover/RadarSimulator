@@ -1,5 +1,6 @@
-from utils.helper import rphi_to_xy, xy_to_rphi
+from util import rphi_to_xy, xy_to_rphi
 from constant import TICK_INTERVAL
+from option import Option
 
 class Noise():
     def __init__(self, r, a, dir, v) -> None:
@@ -30,6 +31,7 @@ class Noise():
     def tick(self):
         # self.v là vận tốc tính theo hải lý / giờ
         # v_tick là vạn tốc tính theo hải lý / tick. 1 tick = TICK_INTERVAL ms
-        v_tick = self.v * 3.6e-6 * TICK_INTERVAL
-        dx, dy = rphi_to_xy(v_tick, self.dir)
+        v_tick = self.v * TICK_INTERVAL / 3.6e6
+        v_tick_scaled = v_tick * Option.v_multiple
+        dx, dy = rphi_to_xy(v_tick_scaled, self.dir)
         self.set_xy(self.x + dx, self.y + dy)

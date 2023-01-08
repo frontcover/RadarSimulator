@@ -1,9 +1,10 @@
 from PyQt5.QtWidgets import QWidget
 from PyQt5 import QtCore, QtGui
-from utils.helper import rphi_to_xy, dist, xy_to_rphi
+from util import rphi_to_xy, dist, xy_to_rphi
 import numpy as np
 from noise import Noise
 from constant import R_MAX, CENTER_GROUND_RADIUS, TICK_INTERVAL, ROTATE_PERIOD
+from option import Option
 
 WIDTH = 500
 HEIGHT = 500
@@ -84,14 +85,14 @@ class Radar(QWidget):
             target.tick()
 
             for noise in target.noises:
-                if not self.parent().cfar_on and self.a - delta_a <= noise.a < self.a and noise.r <= R_MAX:
+                if not Option.cfar and self.a - delta_a <= noise.a < self.a and noise.r <= R_MAX:
                     p = SIGNAL_POWER_FOR_NOISE + np.random.randn() * NOISE_RATIO
                     signal = Signal(noise.x, noise.y, p)
                     self.signals.append(signal)
                 noise.tick()
 
         for noise in self.noises:
-            if not self.parent().cfar_on and self.a - delta_a <= noise.a < self.a and noise.r <= R_MAX:
+            if not Option.cfar and self.a - delta_a <= noise.a < self.a and noise.r <= R_MAX:
                 p = SIGNAL_POWER_FOR_NOISE + np.random.randn() * NOISE_RATIO
                 signal = Signal(noise.x, noise.y, p)
                 self.signals.append(signal)

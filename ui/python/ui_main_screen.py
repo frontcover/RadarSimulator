@@ -132,6 +132,16 @@ class Ui_MainScreen(object):
         self.checkBox = QtWidgets.QCheckBox(MainScreen)
         self.checkBox.setGeometry(QtCore.QRect(20, 700, 81, 20))
         self.checkBox.setObjectName("checkBox")
+        self.v_multiple = QtWidgets.QSpinBox(MainScreen)
+        self.v_multiple.setGeometry(QtCore.QRect(208, 699, 42, 22))
+        self.v_multiple.setMinimum(1)
+        self.v_multiple.setMaximum(100)
+        self.v_multiple.setSingleStep(10)
+        self.v_multiple.setProperty("value", 10)
+        self.v_multiple.setObjectName("v_multiple")
+        self.label = QtWidgets.QLabel(MainScreen)
+        self.label.setGeometry(QtCore.QRect(100, 702, 111, 16))
+        self.label.setObjectName("label")
 
         self.retranslateUi(MainScreen)
         QtCore.QMetaObject.connectSlotsByName(MainScreen)
@@ -177,5 +187,7 @@ class Ui_MainScreen(object):
         self.label_5.setToolTip(_translate("MainScreen", "hải lý"))
         self.label_5.setText(_translate("MainScreen", "Khoảng cách"))
         self.checkBox.setText(_translate("MainScreen", "CFAR"))
+        self.v_multiple.setPrefix(_translate("MainScreen", "x"))
+        self.label.setText(_translate("MainScreen", "Vận tốc mô phỏng"))
 
 from radar import Radar

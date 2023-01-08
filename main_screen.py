@@ -4,21 +4,27 @@ from PyQt5 import QtCore, QtGui
 from target import Target
 import numpy as np
 from constant import R_MAX, CENTER_GROUND_RADIUS, TICK_INTERVAL
+from option import Option
 
 class MainScreen(QMainWindow):
-    def __init__(self, navigator):
+    def __init__(self):
         super().__init__()
-        self.navigator = navigator
+        # Setup UI
         self.uic = Ui_MainScreen()
         self.uic.setupUi(self)
-        self.stui = []
-        self.setup_stui()
-        self.targets = [None, None, None, None]
-        self.cfar_on = False
         self.uic.checkBox.stateChanged.connect(self.toggle_cfar)
+        self.uic.v_multiple.setValue(Option.v_multiple)
+        self.uic.v_multiple.valueChanged.connect(self.v_multiple_on_change)
 
+        # Setup status UI
+        self.stui = [] # status ui
+        self.setup_stui()
+
+        # Init states
+        self.targets = [None, None, None, None]
         self.tracking_target = None
 
+        # Timer
         timer = QtCore.QTimer(self)
         timer.setInterval(TICK_INTERVAL)
         timer.timeout.connect(self.tick)
@@ -66,7 +72,11 @@ class MainScreen(QMainWindow):
         self.uic.radar.tick()
 
     def toggle_cfar(self, isCheck):
-        self.cfar_on = not self.cfar_on
+        Option.cfar = not Option.cfar
+
+    def v_multiple_on_change(self, value):
+        print("Set v x", value)
+        Option.v_multiple = value
 
     def onclick_btn_create(self, i):
         try:
