@@ -148,7 +148,7 @@ class Ui_MainScreen(object):
 
     def retranslateUi(self, MainScreen):
         _translate = QtCore.QCoreApplication.translate
-        MainScreen.setWindowTitle(_translate("MainScreen", "Form"))
+        MainScreen.setWindowTitle(_translate("MainScreen", "Radar Simulator"))
         self.lineEdit_vt_4.setToolTip(_translate("MainScreen", "hải lý/giờ"))
         self.btn_create_4.setText(_translate("MainScreen", "Tạo mục tiêu"))
         self.btn_create_2.setText(_translate("MainScreen", "Tạo mục tiêu"))

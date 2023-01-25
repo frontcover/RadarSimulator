@@ -49,6 +49,5 @@ class Target():
         # v_tick là vạn tốc tính theo hải lý / tick. 1 tick = TICK_INTERVAL ms
         v_tick = self.v * TICK_INTERVAL / 3.6e6
         v_tick_scaled = v_tick * Option.v_multiple
-        print("vtickscaled=",v_tick_scaled)
         dx, dy = rphi_to_xy(v_tick_scaled, self.dir)
         self.set_xy(self.x + dx, self.y + dy)
