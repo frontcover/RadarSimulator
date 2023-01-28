@@ -145,6 +145,16 @@ class Ui_MainScreen(object):
         self.radar_2 = Radar2(MainScreen)
         self.radar_2.setGeometry(QtCore.QRect(800, 180, 500, 500))
         self.radar_2.setObjectName("radar_2")
+        self.show_actual = QtWidgets.QCheckBox(MainScreen)
+        self.show_actual.setGeometry(QtCore.QRect(800, 700, 101, 20))
+        self.show_actual.setObjectName("show_actual")
+        self.show_observe = QtWidgets.QCheckBox(MainScreen)
+        self.show_observe.setGeometry(QtCore.QRect(1010, 700, 121, 20))
+        self.show_observe.setObjectName("show_observe")
+        self.show_predict = QtWidgets.QCheckBox(MainScreen)
+        self.show_predict.setGeometry(QtCore.QRect(1200, 700, 121, 20))
+        self.show_predict.setChecked(True)
+        self.show_predict.setObjectName("show_predict")
 
         self.retranslateUi(MainScreen)
         QtCore.QMetaObject.connectSlotsByName(MainScreen)
@@ -192,6 +202,9 @@ class Ui_MainScreen(object):
         self.checkBox.setText(_translate("MainScreen", "CFAR"))
         self.v_multiple.setPrefix(_translate("MainScreen", "x"))
         self.label.setText(_translate("MainScreen", "Vận tốc mô phỏng"))
+        self.show_actual.setText(_translate("MainScreen", "Vị trí thực tế"))
+        self.show_observe.setText(_translate("MainScreen", "Vị trí quan sát"))
+        self.show_predict.setText(_translate("MainScreen", "Vị trí dự đoán"))
 
 from radar import Radar
 from radar2 import Radar2

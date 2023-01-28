@@ -3,7 +3,7 @@ from PyQt5 import QtCore, QtGui
 from util import rphi_to_xy, dist, xy_to_rphi
 import numpy as np
 from noise import Noise
-from constant import R_MAX, CENTER_GROUND_RADIUS, TICK_INTERVAL, ROTATE_PERIOD
+from constant import R_MAX, CENTER_GROUND_RADIUS, TICK_INTERVAL, ROTATE_PERIOD, MEASUREMENT_NOISE
 from option import Option
 from filterpy.kalman import KalmanFilter
 from filterpy.common import Q_discrete_white_noise
@@ -100,15 +100,23 @@ class Radar2(QWidget):
         painter.setPen(QtCore.Qt.NoPen)
         for target, trace in self.traces.items():
             for h in trace.history:
-                x, y = P(*h['observe'])
-                color = QtGui.QColor(0, 255, 0)
-                painter.setBrush(color)
-                painter.drawEllipse(QtCore.QPointF(x, y), 2, 2)
+                if Option.show_actual:
+                    x, y = P(*h['actual'])
+                    color = QtGui.QColor(255, 0, 0)
+                    painter.setBrush(color)
+                    painter.drawEllipse(QtCore.QPointF(x, y), 1, 1)
 
-                x, y = P(*h['predict'])
-                color = QtGui.QColor(255, 0, 255)
-                painter.setBrush(color)
-                painter.drawEllipse(QtCore.QPointF(x, y), 2, 2)
+                if Option.show_observe:
+                    x, y = P(*h['observe'])
+                    color = QtGui.QColor(0, 255, 0)
+                    painter.setBrush(color)
+                    painter.drawEllipse(QtCore.QPointF(x, y), 1, 1)
+
+                if Option.show_predict:
+                    x, y = P(*h['predict'])
+                    color = QtGui.QColor(255, 255, 255)
+                    painter.setBrush(color)
+                    painter.drawEllipse(QtCore.QPointF(x, y), 1, 1)
 
         return super().paintEvent(a0)
 
@@ -123,10 +131,14 @@ class Trace:
         f = KalmanFilter(dim_x=4, dim_z=2)
     
         # assign initial value for state
-        f.x = np.array([[0.],     # position x
-                        [0.],     # position y
-                        [0.],     # velocity x
-                        [0.]])    # velocity y
+        pos_x = self.target.x + MEASUREMENT_NOISE * np.random.rand()
+        pos_y = self.target.y + MEASUREMENT_NOISE * np.random.rand()
+        vel_x = np.random.rand()
+        vel_y = np.random.rand()
+        f.x = np.array([[pos_x],     # position x
+                        [pos_y],     # position y
+                        [vel_x],     # velocity x
+                        [vel_y]])    # velocity y
 
         # define state transition matrix
         f.F = np.array([[1, 0, 1, 0],
@@ -142,7 +154,7 @@ class Trace:
         f.P = 1 * np.eye(4)
 
         # measurement noise
-        f.R = 1 * np.eye(2)
+        f.R = MEASUREMENT_NOISE * np.eye(2)
 
         # Process noise
         f.Q = Q_discrete_white_noise(dim=4, dt=1, var=0.13)
@@ -150,7 +162,10 @@ class Trace:
         return f
 
     def update(self):
-        z = np.array([self.target.x, self.target.y])
+        observe_x = self.target.x + MEASUREMENT_NOISE * np.random.rand()
+        observe_y = self.target.y + MEASUREMENT_NOISE * np.random.rand()
+
+        z = np.array([observe_x, observe_y])
         self.kalman_filter.predict()
         self.kalman_filter.update(z)
 
@@ -158,6 +173,7 @@ class Trace:
         pred_pos_y = self.kalman_filter.x[1][0]
         
         self.history.append({
-            "observe": (self.target.x, self.target.y), 
+            "actual": (self.target.x, self.target.y),
+            "observe": (observe_x, observe_y), 
             "predict": (pred_pos_x, pred_pos_y)
         })

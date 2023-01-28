@@ -18,9 +18,9 @@ class Target():
         self.v = v
         self.set_ra(r, a)
 
-        self.noises = self.gen_noise()
+        self.noises = self._gen_noise()
 
-    def gen_noise(self):
+    def _gen_noise(self):
         noises = []
         N = np.random.randint(low=20, high=30)
         R = 4

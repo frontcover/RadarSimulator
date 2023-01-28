@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import QMainWindow, QErrorMessage
 from ui.python.ui_main_screen import Ui_MainScreen
 from PyQt5 import QtCore, QtGui
 from target import Target
-import numpy as np
 from constant import R_MAX, CENTER_GROUND_RADIUS, TICK_INTERVAL
 from option import Option
 
@@ -15,6 +14,9 @@ class MainScreen(QMainWindow):
         self.uic.checkBox.stateChanged.connect(self.toggle_cfar)
         self.uic.v_multiple.setValue(Option.v_multiple)
         self.uic.v_multiple.valueChanged.connect(self.v_multiple_on_change)
+        self.uic.show_actual.stateChanged.connect(self.toggle_show_actual)
+        self.uic.show_observe.stateChanged.connect(self.toggle_show_observe)
+        self.uic.show_predict.stateChanged.connect(self.toggle_show_predict)
 
         # Setup status UI
         self.stui = [] # status ui
@@ -116,3 +118,12 @@ class MainScreen(QMainWindow):
 
     def onclick_btn_create_4(self):
         self.onclick_btn_create(3)
+
+    def toggle_show_actual(self, check):
+        Option.show_actual = not Option.show_actual
+
+    def toggle_show_observe(self, check):
+        Option.show_observe = not Option.show_observe
+
+    def toggle_show_predict(self, check):
+        Option.show_predict = not Option.show_predict

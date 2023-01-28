@@ -351,6 +351,48 @@
     </rect>
    </property>
   </widget>
+  <widget class="QCheckBox" name="show_actual">
+   <property name="geometry">
+    <rect>
+     <x>800</x>
+     <y>700</y>
+     <width>101</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Vị trí thực tế</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="show_observe">
+   <property name="geometry">
+    <rect>
+     <x>1010</x>
+     <y>700</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Vị trí quan sát</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="show_predict">
+   <property name="geometry">
+    <rect>
+     <x>1200</x>
+     <y>700</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Vị trí dự đoán</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>
