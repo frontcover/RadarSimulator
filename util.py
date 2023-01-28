@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import constant as C
 
 def rphi_to_xy(r, phi):
     '''
@@ -22,6 +23,20 @@ def xy_to_rphi(x, y):
 
 def dist(x1, y1, x2, y2):
     return np.linalg.norm([x1-x2, y1-y2])
+
+def P(x, y):
+    """
+    Apply reference system for x, y (for painting)
+    """
+    x = C.CENTER_X + C.SCALE * x
+    y = C.CENTER_Y - C.SCALE * y
+    return x, y
+
+def R(r):
+    """
+    Apply reference system for radius (for painting)
+    """
+    return C.SCALE * r
 
 if __name__ == "__main__":
     assert xy_to_rphi(*rphi_to_xy(3, 40)) == (3, 40)

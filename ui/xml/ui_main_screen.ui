@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Radar Simulator</string>
   </property>
-  <widget class="Radar" name="radar" native="true">
+  <widget class="LeftRadar" name="radar" native="true">
    <property name="geometry">
     <rect>
      <x>70</x>
@@ -341,7 +341,7 @@
     <string>Vận tốc mô phỏng</string>
    </property>
   </widget>
-  <widget class="Radar2" name="radar_2" native="true">
+  <widget class="RightRadar" name="radar_2" native="true">
    <property name="geometry">
     <rect>
      <x>800</x>
@@ -396,15 +396,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Radar</class>
+   <class>LeftRadar</class>
    <extends>QWidget</extends>
    <header>radar.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>Radar2</class>
+   <class>RightRadar</class>
    <extends>QWidget</extends>
-   <header>radar2.h</header>
+   <header>radar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

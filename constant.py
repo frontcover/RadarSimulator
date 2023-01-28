@@ -1,6 +1,23 @@
+# Radar dimension
+WIDTH = 500
+HEIGHT = 500
+CENTER_X = WIDTH // 2
+CENTER_Y = HEIGHT // 2
+SCALE = 2.2
+
+# Particle size & alpha
+SIGNAL_PARTICLE_BASE_SIZE = 3
+SIGNAL_POWER_FOR_TARGET = 1
+SIGNAL_POWER_FOR_NOISE = 0.1
+
+NOISE_RATIO = 0.1
+PICKING_DISTANCE_THRESHOLD = 10
+
 R_MAX = 100
 CENTER_GROUND_RADIUS = 5
 TICK_INTERVAL = 10 # each frame take 10 miliseconds
 ROTATE_PERIOD = 6000 # each cycle of radar take 6 seconds
+
+DELTA_A = 360 * TICK_INTERVAL / ROTATE_PERIOD # delta azimuth each tick
 
 MEASUREMENT_NOISE = 2
