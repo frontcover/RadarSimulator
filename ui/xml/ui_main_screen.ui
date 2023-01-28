@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>657</width>
+    <width>1358</width>
     <height>731</height>
    </rect>
   </property>
@@ -341,12 +341,28 @@
     <string>Vận tốc mô phỏng</string>
    </property>
   </widget>
+  <widget class="Radar2" name="radar_2" native="true">
+   <property name="geometry">
+    <rect>
+     <x>800</x>
+     <y>180</y>
+     <width>500</width>
+     <height>500</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>
    <class>Radar</class>
    <extends>QWidget</extends>
    <header>radar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Radar2</class>
+   <extends>QWidget</extends>
+   <header>radar2.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

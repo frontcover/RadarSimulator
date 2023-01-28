@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainScreen(object):
     def setupUi(self, MainScreen):
         MainScreen.setObjectName("MainScreen")
-        MainScreen.resize(657, 731)
+        MainScreen.resize(1358, 731)
         self.radar = Radar(MainScreen)
         self.radar.setGeometry(QtCore.QRect(70, 180, 500, 500))
         self.radar.setObjectName("radar")
@@ -142,6 +142,9 @@ class Ui_MainScreen(object):
         self.label = QtWidgets.QLabel(MainScreen)
         self.label.setGeometry(QtCore.QRect(100, 702, 111, 16))
         self.label.setObjectName("label")
+        self.radar_2 = Radar2(MainScreen)
+        self.radar_2.setGeometry(QtCore.QRect(800, 180, 500, 500))
+        self.radar_2.setObjectName("radar_2")
 
         self.retranslateUi(MainScreen)
         QtCore.QMetaObject.connectSlotsByName(MainScreen)
@@ -191,3 +194,4 @@ class Ui_MainScreen(object):
         self.label.setText(_translate("MainScreen", "Vận tốc mô phỏng"))
 
 from radar import Radar
+from radar2 import Radar2

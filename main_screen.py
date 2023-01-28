@@ -70,6 +70,7 @@ class MainScreen(QMainWindow):
 
     def tick(self):
         self.uic.radar.tick()
+        self.uic.radar_2.tick()
 
     def toggle_cfar(self, isCheck):
         Option.cfar = not Option.cfar
