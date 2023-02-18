@@ -94,20 +94,26 @@ class LeftRadar(Radar):
             if target == None: 
                 continue
 
+            # If target radar's azimuth go through target 
             if self.a - C.DELTA_A <= target.a < self.a and target.r <= C.R_MAX:
+                # Create a signal at position of target with some noisy power 
                 p = C.SIGNAL_POWER_FOR_TARGET + np.random.randn() * C.NOISE_RATIO
                 signal = Signal(target.x, target.y, p)
                 self.signals.append(signal)
                 # Tracking box
                 if target == self.parent().tracking_target:
+                    # Create new tracking box
                     self.tracking_boxes.append(TrackingBox(target.x, target.y))
+                    # Update status UI
                     index = self.parent().targets.index(target)
                     self.parent().stui[index]['r'].setText(f"{target.r:.2f}")
                     self.parent().stui[index]['a'].setText(f"{target.a:.2f}")
                     self.parent().stui[index]['dir'].setText(f"{target.dir:.2f}")
                     self.parent().stui[index]['v'].setText(f"{target.v:.2f}")
+            # Update target
             target.tick()
 
+            # Do the same thing for noises of target
             for noise in target.noises:
                 if not Option.cfar and self.a - C.DELTA_A <= noise.a < self.a and noise.r <= C.R_MAX:
                     p = C.SIGNAL_POWER_FOR_NOISE + np.random.randn() * C.NOISE_RATIO
@@ -115,6 +121,7 @@ class LeftRadar(Radar):
                     self.signals.append(signal)
                 noise.tick()
 
+        # Scan for environment's noise
         for noise in self.noises:
             if not Option.cfar and self.a - C.DELTA_A <= noise.a < self.a and noise.r <= C.R_MAX:
                 p = C.SIGNAL_POWER_FOR_NOISE + np.random.randn() * C.NOISE_RATIO
@@ -122,6 +129,7 @@ class LeftRadar(Radar):
                 self.signals.append(signal)
             noise.tick()
         
+        # Repaint
         self.update()
 
     def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
@@ -195,23 +203,33 @@ class TrackingBox():
 class RightRadar(Radar):
     def __init__(self, parent) -> None:
         super().__init__(parent)
-        self.a = 0
-        self.traces = {}
+        self.a = 0 # azimuth
+        # where to save Trace objects of targets.
+        # self.traces[target_1] is the Trace object of target_1
+        self.traces = {} 
     
 
     def tick(self):
+        # Calculate delta_a and increase azimuth
         delta_a = 360 * C.TICK_INTERVAL / C.ROTATE_PERIOD
         self.a = (self.a + delta_a) % 360
 
+        # For each target
         for target in self.parent().targets:
+            # If target is not created, skip
             if target == None:
                 continue
-
+            
+            # If target in delta_a area
             if self.a - delta_a <= target.a < self.a and target.r <= C.R_MAX:
+                # Create a trace for target if not already existed
                 if target not in self.traces:
                     self.traces[target] = Trace(target)
+                
+                # Update trace
                 self.traces[target].update()
 
+        # Repaint
         self.update()
 
     def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
@@ -291,16 +309,20 @@ class Trace:
         return f
 
     def update(self):
+        # Simulate observing target's position 
         observe_x = self.target.x + C.MEASUREMENT_NOISE * np.random.rand()
         observe_y = self.target.y + C.MEASUREMENT_NOISE * np.random.rand()
 
+        # Predict and Update Kalman Filter
         z = np.array([observe_x, observe_y])
         self.kalman_filter.predict()
         self.kalman_filter.update(z)
 
+        # Get the prediction
         pred_pos_x = self.kalman_filter.x[0][0]
         pred_pos_y = self.kalman_filter.x[1][0]
         
+        # Save position to history
         self.history.append({
             "actual": (self.target.x, self.target.y),
             "observe": (observe_x, observe_y), 
