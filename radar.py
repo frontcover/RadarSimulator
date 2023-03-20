@@ -5,11 +5,13 @@ from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QWidget
 
 import constant as C
-from noise import Noise
 from option import Option
-from util import P, R, dist, rphi_to_xy, xy_to_rphi
+from util import P, P_revert, R, dist, rphi_to_xy, gaussian_kernel_2d, vectorized_xy_to_rphi, CFARDetector1D
+from constant import A_RES, R_RES, GM_TRACE_LENGTH
 
 class Radar(QWidget):
+    """Base class"""
+
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self.a = 0
@@ -62,44 +64,41 @@ class Radar(QWidget):
 class LeftRadar(Radar):
     def __init__(self, parent) -> None:
         super().__init__(parent)
-        self.signals = []
-        self.noises = self.gen_noises()
         self.tracking_boxes = []
-    
-    def gen_noises(self):
-        noises = []
-        N = 1000
-        X = np.random.uniform(-C.R_MAX, C.R_MAX, size=N)
-        Y = np.random.uniform(-C.R_MAX, C.R_MAX, size=N)
-        Dir = np.random.randint(0, 360, size=N)
-        V = np.random.randn(N) * 0.01
-        for i in range(N):
-            r, a = xy_to_rphi(X[i], Y[i])
-            dir = Dir[i]
-            v = V[i]
-            noises.append(Noise(r, a, dir, v))
-        return noises
+        self.mat = np.zeros(shape=(A_RES, R_RES))
+
+        # Indices conversion
+        Y, X = np.indices((C.HEIGHT, C.WIDTH))
+        X2, Y2 = P_revert(X, Y)
+        R, A = vectorized_xy_to_rphi(X2, Y2)
+        self.R, self.A = R.astype(int), A.astype(int)
+        self.R[self.R >= 100] = 100
 
     def tick(self):
         super().tick()
         
-        # Remove old weak signal
-        self.signals = list(filter(lambda signal: signal.alpha > 0.1, self.signals))
+        # Create gradient mask
+        a = int(self.a)
+        L = GM_TRACE_LENGTH
+        stick = np.zeros(shape=(A_RES,))
+        stick[np.arange(a-L, a) % A_RES] = np.linspace(0.99, 1, num=L)
+        gradient_mask = np.tile(stick.reshape(A_RES, 1), (1, R_RES))
+        self.mat *= gradient_mask
 
-        # Remove old weak tracking boxes
-        self.tracking_boxes = list(filter(lambda t: t.alpha > 0.01, self.tracking_boxes))
+        # Generate new row of signal (noise)
+        self.mat[a] = np.random.rand(R_RES) * 0.4
 
-        # Scan for signals
         for target in self.parent().targets:
             if target == None: 
                 continue
 
             # If target radar's azimuth go through target 
             if self.a - C.DELTA_A <= target.a < self.a and target.r <= C.R_MAX:
-                # Create a signal at position of target with some noisy power 
-                p = C.SIGNAL_POWER_FOR_TARGET + np.random.randn() * C.NOISE_RATIO
-                signal = Signal(target.x, target.y, p)
-                self.signals.append(signal)
+                # Add some signal in target position
+                signal = gaussian_kernel_2d(3, 5, 0, 1)
+                self.mat[np.arange(a - 2, a + 3) % A_RES, int(target.r) - 1:int(target.r) + 2] += signal
+                self.mat = self.mat.clip(0,1)
+
                 # Tracking box
                 if target == self.parent().tracking_target:
                     # Create new tracking box
@@ -113,22 +112,9 @@ class LeftRadar(Radar):
             # Update target
             target.tick()
 
-            # Do the same thing for noises of target
-            for noise in target.noises:
-                if not Option.cfar and self.a - C.DELTA_A <= noise.a < self.a and noise.r <= C.R_MAX:
-                    p = C.SIGNAL_POWER_FOR_NOISE + np.random.randn() * C.NOISE_RATIO
-                    signal = Signal(noise.x, noise.y, p)
-                    self.signals.append(signal)
-                noise.tick()
+        if Option.cfar:
+            self.mat[a] = CFARDetector1D(self.mat[a], 0.01, 5, 1)
 
-        # Scan for environment's noise
-        for noise in self.noises:
-            if not Option.cfar and self.a - C.DELTA_A <= noise.a < self.a and noise.r <= C.R_MAX:
-                p = C.SIGNAL_POWER_FOR_NOISE + np.random.randn() * C.NOISE_RATIO
-                signal = Signal(noise.x, noise.y, p)
-                self.signals.append(signal)
-            noise.tick()
-        
         # Repaint
         self.update()
 
@@ -138,15 +124,14 @@ class LeftRadar(Radar):
         # Get painter
         painter = QtGui.QPainter(self)
 
-        # Draw signals
-        painter.setPen(QtCore.Qt.NoPen)
-        for signal in self.signals:
-            color = QtGui.QColor(0, 255, 0, 255 * signal.alpha)
-            painter.setBrush(color)
-            x, y = P(signal.x, signal.y)
-            s = signal.p * C.SIGNAL_PARTICLE_BASE_SIZE
-            painter.drawEllipse(QtCore.QPointF(x, y), s, s)
-            signal.tick()
+        # Normalize matrix and draw it
+        image_data = np.full(shape=(C.HEIGHT, C.WIDTH, 4), fill_value=0, dtype=np.uint8)
+        image_data[:, :, 1] = 255
+        tmp_mat = np.zeros(shape=(A_RES, R_RES + 1))
+        tmp_mat[:,:-1] = self.mat
+        image_data[:, :, 3] = 255 * tmp_mat[self.A, self.R]
+        image = QtGui.QImage(image_data, image_data.shape[0], image_data.shape[1], QtGui.QImage.Format_RGBA8888)
+        painter.drawImage(self.rect(), image)
 
         # Draw tracking boxes
         painter.setBrush(QtCore.Qt.NoBrush)
@@ -173,17 +158,6 @@ class LeftRadar(Radar):
                 self.parent().tracking_target = None
                 print("Unset tracking target")
         return super().mousePressEvent(a0)
-
-class Signal():
-    def __init__(self, x, y, p) -> None:
-        self.x = x
-        self.y = y
-        self.p = p # power of signal
-        self.alpha = 1
-        self.FADING_RATE = 0.99
-
-    def tick(self):
-        self.alpha *= self.FADING_RATE
 
 class TrackingBox():
     def __init__(self, x, y) -> None:

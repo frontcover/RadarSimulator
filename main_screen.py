@@ -4,6 +4,7 @@ from PyQt5 import QtCore, QtGui
 from target import Target
 from constant import R_MAX, CENTER_GROUND_RADIUS, TICK_INTERVAL
 from option import Option
+import traceback
 
 class MainScreen(QMainWindow):
     def __init__(self):
@@ -104,7 +105,7 @@ class MainScreen(QMainWindow):
             msg.showMessage("Giá trị là số không hợp lệ")
         except Exception as e:
             msg = QErrorMessage(self)
-            print(str(e))
+            print(traceback.format_exc())
             msg.showMessage(str(e))
 
     def onclick_btn_create_1(self):

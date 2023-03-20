@@ -18,20 +18,6 @@ class Target():
         self.v = v
         self.set_ra(r, a)
 
-        self.noises = self._gen_noise()
-
-    def _gen_noise(self):
-        noises = []
-        N = np.random.randint(low=20, high=30)
-        R = 4
-        for i in range(N):
-            noise = Noise(0, 0, self.dir, self.v)
-            dx = np.random.randn() * R
-            dy = np.random.randn() * R
-            noise.set_xy(self.x + dx, self.y + dy)
-            noises.append(noise)
-        return noises
-
     def set_xy(self, x, y):
         self.x = x
         self.y = y
