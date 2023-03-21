@@ -3,6 +3,7 @@ from filterpy.common import Q_discrete_white_noise
 from filterpy.kalman import KalmanFilter
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QWidget
+import cv2
 
 import constant as C
 from option import Option
@@ -16,6 +17,11 @@ class Radar(QWidget):
         super().__init__(parent)
         self.a = 0
     
+        # Load map image
+        self.map = cv2.imread("assets/map.png", cv2.IMREAD_GRAYSCALE)
+        if self.map.shape != (C.HEIGHT, C.WIDTH):
+            raise Exception(f"The map image must be a binary image with a size of {C.HEIGHT}x{C.WIDTH}")
+
     def tick(self):
         self.a = (self.a + C.DELTA_A) % 360
 
@@ -28,9 +34,16 @@ class Radar(QWidget):
         painter.drawEllipse(QtCore.QPointF(*P(0, 0)), R(C.R_MAX), R(C.R_MAX))
 
         # Draw ground
-        painter.setBrush(QtGui.QColor(0, 255, 0, 200))
-        painter.drawEllipse(QtCore.QPointF(*P(0, 0)), R(C.CENTER_GROUND_RADIUS), R(C.CENTER_GROUND_RADIUS))
-
+        image_data = np.full(shape=(C.HEIGHT, C.WIDTH, 4), fill_value=0, dtype=np.uint8)
+        def myfunc(i, j):
+            i, j = P_revert(i, j)
+            return i ** 2 + j ** 2 < C.R_MAX ** 2
+        mask = np.fromfunction(myfunc, shape=(C.HEIGHT, C.WIDTH))
+        mask &= (self.map == 255)
+        image_data[mask] = (50, 168, 82, 200)
+        image = QtGui.QImage(image_data, image_data.shape[0], image_data.shape[1], QtGui.QImage.Format_RGBA8888)
+        painter.drawImage(self.rect(), image)
+        
         ## Draw landmark
         # Draw azimuth landmark
         painter.setPen(QtGui.QColor(127, 127, 127))
@@ -86,7 +99,8 @@ class LeftRadar(Radar):
         self.mat *= gradient_mask
 
         # Generate new row of signal (noise)
-        self.mat[a] = np.random.rand(R_RES) * 0.4
+        noise = np.random.rand(R_RES)
+        self.mat[a] = noise * 0.3
 
         for target in self.parent().targets:
             if target == None: 
