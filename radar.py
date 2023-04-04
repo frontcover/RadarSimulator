@@ -138,7 +138,7 @@ class LeftRadar(Radar):
         # Get painter
         painter = QtGui.QPainter(self)
 
-        # Normalize matrix and draw it
+        # Draw signal in matrix
         image_data = np.full(shape=(C.HEIGHT, C.WIDTH, 4), fill_value=0, dtype=np.uint8)
         image_data[:, :, 1] = 255
         tmp_mat = np.zeros(shape=(A_RES, R_RES + 1))
