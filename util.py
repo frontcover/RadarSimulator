@@ -84,10 +84,9 @@ def CFARDetector1D(data, pfa, train_size, guard_size):
 
     Args:
         data (ndarray): The 1D input data to search for peaks.
-        threshold_factor (float): The factor used to multiply the noise level
-            estimate to obtain the detection threshold.
-        window_size (tuple): The size of the sliding window used in the CFAR
-            algorithm.
+        pfa (float): The probability of false alarm.
+        train_size (int): Number of training cells (one side).
+        guard_size (int): Number of guarding cells (one side).
 
     Returns:
         

@@ -1,6 +1,4 @@
 from util import rphi_to_xy, xy_to_rphi
-from noise import Noise
-import numpy as np
 from constant import TICK_INTERVAL
 from option import Option
 

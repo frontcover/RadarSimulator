@@ -18,6 +18,7 @@ class MainScreen(QMainWindow):
         self.uic.show_actual.stateChanged.connect(self.toggle_show_actual)
         self.uic.show_observe.stateChanged.connect(self.toggle_show_observe)
         self.uic.show_predict.stateChanged.connect(self.toggle_show_predict)
+        self.uic.pfa_slider.valueChanged.connect(self.pfa_on_change)
 
         # Setup status UI
         self.stui = [] # status ui
@@ -32,6 +33,10 @@ class MainScreen(QMainWindow):
         timer.setInterval(TICK_INTERVAL)
         timer.timeout.connect(self.tick)
         timer.start()
+
+        # Set default pfa
+        self.uic.pfa_slider.setValue(Option.pfa * 100000)
+        self.uic.pfa_tbx.setText(str(Option.pfa))
 
     def setup_stui(self):
         # status ui
@@ -76,7 +81,7 @@ class MainScreen(QMainWindow):
         self.uic.radar_2.tick()
 
     def toggle_cfar(self, isCheck):
-        Option.cfar = not Option.cfar
+        Option.enable_CFAR = not Option.enable_CFAR
 
     def v_multiple_on_change(self, value):
         print("Set v x", value)
@@ -119,6 +124,11 @@ class MainScreen(QMainWindow):
 
     def onclick_btn_create_4(self):
         self.onclick_btn_create(3)
+    
+    def pfa_on_change(self, value):
+        print("Change pfa=", value)
+        Option.pfa = value / 100000
+        self.uic.pfa_tbx.setText(str(Option.pfa))
 
     def toggle_show_actual(self, check):
         Option.show_actual = not Option.show_actual

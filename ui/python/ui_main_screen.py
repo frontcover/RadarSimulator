@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainScreen(object):
     def setupUi(self, MainScreen):
         MainScreen.setObjectName("MainScreen")
-        MainScreen.resize(1358, 731)
+        MainScreen.resize(1358, 749)
         self.radar = LeftRadar(MainScreen)
         self.radar.setGeometry(QtCore.QRect(70, 180, 500, 500))
         self.radar.setObjectName("radar")
@@ -155,6 +155,24 @@ class Ui_MainScreen(object):
         self.show_predict.setGeometry(QtCore.QRect(1200, 700, 121, 20))
         self.show_predict.setChecked(True)
         self.show_predict.setObjectName("show_predict")
+        self.pfa_slider = QtWidgets.QSlider(MainScreen)
+        self.pfa_slider.setGeometry(QtCore.QRect(330, 700, 171, 22))
+        self.pfa_slider.setMinimum(1)
+        self.pfa_slider.setMaximum(2000)
+        self.pfa_slider.setSingleStep(100)
+        self.pfa_slider.setPageStep(1000)
+        self.pfa_slider.setProperty("value", 1)
+        self.pfa_slider.setTracking(True)
+        self.pfa_slider.setOrientation(QtCore.Qt.Horizontal)
+        self.pfa_slider.setTickPosition(QtWidgets.QSlider.TicksBelow)
+        self.pfa_slider.setObjectName("pfa_slider")
+        self.label_18 = QtWidgets.QLabel(MainScreen)
+        self.label_18.setGeometry(QtCore.QRect(290, 700, 31, 16))
+        self.label_18.setObjectName("label_18")
+        self.pfa_tbx = QtWidgets.QLineEdit(MainScreen)
+        self.pfa_tbx.setGeometry(QtCore.QRect(510, 700, 61, 22))
+        self.pfa_tbx.setReadOnly(True)
+        self.pfa_tbx.setObjectName("pfa_tbx")
 
         self.retranslateUi(MainScreen)
         QtCore.QMetaObject.connectSlotsByName(MainScreen)
@@ -205,5 +223,6 @@ class Ui_MainScreen(object):
         self.show_actual.setText(_translate("MainScreen", "Vị trí thực tế"))
         self.show_observe.setText(_translate("MainScreen", "Vị trí quan sát"))
         self.show_predict.setText(_translate("MainScreen", "Vị trí dự đoán"))
+        self.label_18.setText(_translate("MainScreen", "PFA"))
 
 from radar import LeftRadar, RightRadar

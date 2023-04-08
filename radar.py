@@ -126,8 +126,8 @@ class LeftRadar(Radar):
             # Update target
             target.tick()
 
-        if Option.cfar:
-            self.mat[a] = CFARDetector1D(self.mat[a], 0.01, 5, 1)
+        if Option.enable_CFAR:
+            self.mat[a] = CFARDetector1D(self.mat[a], Option.pfa, Option.train_size, Option.guard_size)
 
         # Repaint
         self.update()
