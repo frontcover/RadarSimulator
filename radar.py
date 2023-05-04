@@ -180,7 +180,7 @@ class TrackingBox():
         self.W = 10
         self.H = 10
         self.alpha = 1
-        self.FADING_RATE = 0.99
+        self.FADING_RATE = 0.996
 
     def tick(self):
         self.alpha *= self.FADING_RATE

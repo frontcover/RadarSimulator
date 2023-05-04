@@ -7,7 +7,7 @@ from option import Option
 import traceback
 
 class MainScreen(QMainWindow):
-    def __init__(self):
+    def __init__(self, navigator):
         super().__init__()
         # Setup UI
         self.uic = Ui_MainScreen()

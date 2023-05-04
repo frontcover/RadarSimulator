@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1358</width>
+    <width>1351</width>
     <height>749</height>
    </rect>
   </property>
@@ -33,6 +33,83 @@
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="2">
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>Phương vị</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string>Phương vị</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="3">
+     <widget class="QLineEdit" name="lineEdit_pv_4">
+      <property name="toolTip">
+       <string>độ</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_7">
+      <property name="text">
+       <string>Khoảng cách</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="lineEdit_kc_3">
+      <property name="toolTip">
+       <string>hải lý</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="lineEdit_kc_2">
+      <property name="toolTip">
+       <string>hải lý</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="6">
+     <widget class="QLabel" name="label_15">
+      <property name="text">
+       <string>Vận tốc</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QLineEdit" name="lineEdit_kc_4">
+      <property name="toolTip">
+       <string>hải lý</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="7">
+     <widget class="QLineEdit" name="lineEdit_vt_1">
+      <property name="toolTip">
+       <string>hải lý/giờ</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="5">
+     <widget class="QLineEdit" name="lineEdit_hd_3">
+      <property name="toolTip">
+       <string>độ</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="5">
+     <widget class="QLineEdit" name="lineEdit_hd_4">
+      <property name="toolTip">
+       <string>độ</string>
+      </property>
+     </widget>
+    </item>
     <item row="3" column="7">
      <widget class="QLineEdit" name="lineEdit_vt_4">
       <property name="toolTip">
@@ -47,10 +124,10 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="8">
-     <widget class="QPushButton" name="btn_create_2">
+    <item row="3" column="6">
+     <widget class="QLabel" name="label_4">
       <property name="text">
-       <string>Tạo mục tiêu</string>
+       <string>Vận tốc</string>
       </property>
      </widget>
     </item>
@@ -61,10 +138,10 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="6">
-     <widget class="QLabel" name="label_4">
+    <item row="1" column="8">
+     <widget class="QPushButton" name="btn_create_2">
       <property name="text">
-       <string>Vận tốc</string>
+       <string>Tạo mục tiêu</string>
       </property>
      </widget>
     </item>
@@ -82,13 +159,6 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="8">
-     <widget class="QPushButton" name="btn_create_3">
-      <property name="text">
-       <string>Tạo mục tiêu</string>
-      </property>
-     </widget>
-    </item>
     <item row="1" column="4">
      <widget class="QLabel" name="label_12">
       <property name="text">
@@ -96,94 +166,10 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="lineEdit_kc_3">
-      <property name="toolTip">
-       <string>hải lý</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QLabel" name="label_11">
+    <item row="2" column="8">
+     <widget class="QPushButton" name="btn_create_3">
       <property name="text">
-       <string>Phương vị</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="lineEdit_kc_2">
-      <property name="toolTip">
-       <string>hải lý</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_7">
-      <property name="text">
-       <string>Khoảng cách</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="3">
-     <widget class="QLineEdit" name="lineEdit_pv_4">
-      <property name="toolTip">
-       <string>độ</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="lineEdit_kc_4">
-      <property name="toolTip">
-       <string>hải lý</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="6">
-     <widget class="QLabel" name="label_15">
-      <property name="text">
-       <string>Vận tốc</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="5">
-     <widget class="QLineEdit" name="lineEdit_hd_4">
-      <property name="toolTip">
-       <string>độ</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="5">
-     <widget class="QLineEdit" name="lineEdit_hd_3">
-      <property name="toolTip">
-       <string>độ</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="7">
-     <widget class="QLineEdit" name="lineEdit_vt_1">
-      <property name="toolTip">
-       <string>hải lý/giờ</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QLabel" name="label_10">
-      <property name="text">
-       <string>Phương vị</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QLabel" name="label_9">
-      <property name="text">
-       <string>Phương vị</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="4">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>Hướng đi</string>
+       <string>Tạo mục tiêu</string>
       </property>
      </widget>
     </item>
@@ -201,6 +187,13 @@
       </property>
      </widget>
     </item>
+    <item row="3" column="4">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Hướng đi</string>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="1">
      <widget class="QLineEdit" name="lineEdit_kc_1">
       <property name="toolTip">
@@ -208,17 +201,10 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="4">
-     <widget class="QLabel" name="label_14">
+    <item row="0" column="2">
+     <widget class="QLabel" name="label_9">
       <property name="text">
-       <string>Hướng đi</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_6">
-      <property name="text">
-       <string>Khoảng cách</string>
+       <string>Phương vị</string>
       </property>
      </widget>
     </item>
@@ -243,6 +229,13 @@
       </property>
      </widget>
     </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>Khoảng cách</string>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="7">
      <widget class="QLineEdit" name="lineEdit_vt_2">
       <property name="toolTip">
@@ -250,8 +243,8 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="3">
-     <widget class="QLineEdit" name="lineEdit_pv_1">
+    <item row="2" column="3">
+     <widget class="QLineEdit" name="lineEdit_pv_3">
       <property name="toolTip">
        <string>độ</string>
       </property>
@@ -264,15 +257,15 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="3">
-     <widget class="QLineEdit" name="lineEdit_pv_3">
+    <item row="1" column="5">
+     <widget class="QLineEdit" name="lineEdit_hd_2">
       <property name="toolTip">
        <string>độ</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="5">
-     <widget class="QLineEdit" name="lineEdit_hd_2">
+    <item row="0" column="3">
+     <widget class="QLineEdit" name="lineEdit_pv_1">
       <property name="toolTip">
        <string>độ</string>
       </property>
@@ -285,6 +278,13 @@
       </property>
       <property name="text">
        <string>Khoảng cách</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="4">
+     <widget class="QLabel" name="label_14">
+      <property name="text">
+       <string>Hướng đi</string>
       </property>
      </widget>
     </item>
@@ -355,7 +355,7 @@
    <property name="geometry">
     <rect>
      <x>800</x>
-     <y>700</y>
+     <y>120</y>
      <width>101</width>
      <height>20</height>
     </rect>
@@ -368,7 +368,7 @@
    <property name="geometry">
     <rect>
      <x>1010</x>
-     <y>700</y>
+     <y>120</y>
      <width>121</width>
      <height>20</height>
     </rect>
@@ -381,7 +381,7 @@
    <property name="geometry">
     <rect>
      <x>1200</x>
-     <y>700</y>
+     <y>120</y>
      <width>121</width>
      <height>20</height>
     </rect>
@@ -451,6 +451,19 @@
    </property>
    <property name="readOnly">
     <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_19">
+   <property name="geometry">
+    <rect>
+     <x>800</x>
+     <y>30</y>
+     <width>501</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;MÔ PHỎNG BÁM QUỸ ĐẠO MỤC TIÊU VỚI KALMAN&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
  </widget>
