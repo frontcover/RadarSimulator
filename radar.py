@@ -16,6 +16,7 @@ class Radar(QWidget):
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self.a = 0
+        self.tracking_boxes = []
     
         # Load map image
         self.map = cv2.imread("assets/map.png", cv2.IMREAD_GRAYSCALE)
@@ -70,6 +71,32 @@ class Radar(QWidget):
         x1, y1 = P(0, 0)
         x2, y2 = P(p2[0], p2[1])
         painter.drawLine(x1, y1, x2, y2)
+
+    def draw_tracking_boxes(self, painter):
+        painter.setBrush(QtCore.Qt.NoBrush)
+        for tracking_box in self.tracking_boxes:
+            color = QtGui.QColor(255, 255, 0, 255 * tracking_box.alpha)
+            painter.setPen(color)
+            x, y = P(tracking_box.x - tracking_box.W // 2, tracking_box.y + tracking_box.H // 2)
+            w, h = R(tracking_box.W), R(tracking_box.H)
+            painter.drawRect(x, y, w, h)
+            tracking_box.tick()
+
+    def mousePressEvent(self, a0: QtGui.QMouseEvent) -> None:
+        for target in self.parent().targets:
+            if target == None:
+                continue
+            x1, y1 = P(target.x, target.y)
+            x0, y0 = a0.x(), a0.y()
+            if dist(x0, y0, x1, y1) < C.PICKING_DISTANCE_THRESHOLD:
+                self.parent().tracking_target = target
+                print("Set tracking target")
+                break
+        else:
+            if self.parent().tracking_target != None:
+                self.parent().tracking_target = None
+                print("Unset tracking target")
+        return super().mousePressEvent(a0)
         
 ################################################################################################
 ####################################### Left radar #############################################
@@ -148,30 +175,7 @@ class LeftRadar(Radar):
         painter.drawImage(self.rect(), image)
 
         # Draw tracking boxes
-        painter.setBrush(QtCore.Qt.NoBrush)
-        for tracking_box in self.tracking_boxes:
-            color = QtGui.QColor(255, 255, 0, 255 * tracking_box.alpha)
-            painter.setPen(color)
-            x, y = P(tracking_box.x - tracking_box.W // 2, tracking_box.y + tracking_box.H // 2)
-            w, h = R(tracking_box.W), R(tracking_box.H)
-            painter.drawRect(x, y, w, h)
-            tracking_box.tick()
-
-    def mousePressEvent(self, a0: QtGui.QMouseEvent) -> None:
-        for target in self.parent().targets:
-            if target == None:
-                continue
-            x1, y1 = P(target.x, target.y)
-            x0, y0 = a0.x(), a0.y()
-            if dist(x0, y0, x1, y1) < C.PICKING_DISTANCE_THRESHOLD:
-                self.parent().tracking_target = target
-                print("Set tracking target")
-                break
-        else:
-            if self.parent().tracking_target != None:
-                self.parent().tracking_target = None
-                print("Unset tracking target")
-        return super().mousePressEvent(a0)
+        self.draw_tracking_boxes(painter)
 
 class TrackingBox():
     def __init__(self, x, y) -> None:
@@ -217,6 +221,11 @@ class RightRadar(Radar):
                 # Update trace
                 self.traces[target].update()
 
+                # Tracking box
+                if target == self.parent().tracking_target:
+                    # Create new tracking box
+                    self.tracking_boxes.append(TrackingBox(target.x, target.y))
+
         # Repaint
         self.update()
 
@@ -247,6 +256,9 @@ class RightRadar(Radar):
                     color = QtGui.QColor(255, 255, 255)
                     painter.setBrush(color)
                     painter.drawEllipse(QtCore.QPointF(x, y), 1, 1)
+
+        # Draw tracking boxes
+        self.draw_tracking_boxes(painter)
 
 class Trace:
     '''
