@@ -158,7 +158,7 @@ class Ui_MainScreen(object):
         self.pfa_slider = QtWidgets.QSlider(MainScreen)
         self.pfa_slider.setGeometry(QtCore.QRect(330, 700, 171, 22))
         self.pfa_slider.setMinimum(1)
-        self.pfa_slider.setMaximum(2000)
+        self.pfa_slider.setMaximum(20000)
         self.pfa_slider.setSingleStep(100)
         self.pfa_slider.setPageStep(1000)
         self.pfa_slider.setProperty("value", 1)

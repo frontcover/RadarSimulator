@@ -188,6 +188,8 @@ class TrackingBox():
 
     def tick(self):
         self.alpha *= self.FADING_RATE
+        self.H *= self.FADING_RATE
+        self.W *= self.FADING_RATE
 
 ################################################################################################
 ####################################### Right radar #############################################
