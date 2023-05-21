@@ -466,6 +466,19 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;MÔ PHỎNG BÁM QUỸ ĐẠO MỤC TIÊU VỚI KALMAN&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="plot_btn">
+   <property name="geometry">
+    <rect>
+     <x>1210</x>
+     <y>700</y>
+     <width>93</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Plot</string>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>

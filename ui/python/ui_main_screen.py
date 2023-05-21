@@ -176,6 +176,9 @@ class Ui_MainScreen(object):
         self.label_19 = QtWidgets.QLabel(MainScreen)
         self.label_19.setGeometry(QtCore.QRect(800, 30, 501, 51))
         self.label_19.setObjectName("label_19")
+        self.plot_btn = QtWidgets.QPushButton(MainScreen)
+        self.plot_btn.setGeometry(QtCore.QRect(1210, 700, 93, 28))
+        self.plot_btn.setObjectName("plot_btn")
 
         self.retranslateUi(MainScreen)
         QtCore.QMetaObject.connectSlotsByName(MainScreen)
@@ -228,5 +231,6 @@ class Ui_MainScreen(object):
         self.show_predict.setText(_translate("MainScreen", "Vị trí dự đoán"))
         self.label_18.setText(_translate("MainScreen", "PFA"))
         self.label_19.setText(_translate("MainScreen", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600;\">MÔ PHỎNG BÁM QUỸ ĐẠO MỤC TIÊU VỚI KALMAN</span></p></body></html>"))
+        self.plot_btn.setText(_translate("MainScreen", "Plot"))
 
 from radar import LeftRadar, RightRadar

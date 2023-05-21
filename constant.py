@@ -20,7 +20,7 @@ ROTATE_PERIOD = 6000 # each cycle of radar take 6 seconds
 
 DELTA_A = 360 * TICK_INTERVAL / ROTATE_PERIOD # delta azimuth each tick
 
-MEASUREMENT_NOISE = 2
+MEASUREMENT_NOISE = 0.2
 
 A_RES = 360
 R_RES = 100

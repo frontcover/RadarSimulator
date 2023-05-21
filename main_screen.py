@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QErrorMessage
 from ui.python.ui_main_screen import Ui_MainScreen
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore
 from target import Target
 from constant import R_MAX, CENTER_GROUND_RADIUS, TICK_INTERVAL
 from option import Option
@@ -9,6 +9,8 @@ import traceback
 class MainScreen(QMainWindow):
     def __init__(self, navigator):
         super().__init__()
+        self.navigator = navigator
+
         # Setup UI
         self.uic = Ui_MainScreen()
         self.uic.setupUi(self)
@@ -19,6 +21,7 @@ class MainScreen(QMainWindow):
         self.uic.show_observe.stateChanged.connect(self.toggle_show_observe)
         self.uic.show_predict.stateChanged.connect(self.toggle_show_predict)
         self.uic.pfa_slider.valueChanged.connect(self.pfa_on_change)
+        self.uic.plot_btn.clicked.connect(self.open_plot)
 
         # Setup status UI
         self.stui = [] # status ui
@@ -138,3 +141,6 @@ class MainScreen(QMainWindow):
 
     def toggle_show_predict(self, check):
         Option.show_predict = not Option.show_predict
+
+    def open_plot(self):
+        self.navigator.open_plot_screen()

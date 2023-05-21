@@ -75,7 +75,7 @@ class Radar(QWidget):
     def draw_tracking_boxes(self, painter):
         painter.setBrush(QtCore.Qt.NoBrush)
         for tracking_box in self.tracking_boxes:
-            color = QtGui.QColor(255, 255, 0, 255 * tracking_box.alpha)
+            color = QtGui.QColor(0, 255, 0, 255 * tracking_box.alpha)
             painter.setPen(color)
             x, y = P(tracking_box.x - tracking_box.W // 2, tracking_box.y + tracking_box.H // 2)
             w, h = R(tracking_box.W), R(tracking_box.H)
@@ -188,8 +188,8 @@ class TrackingBox():
 
     def tick(self):
         self.alpha *= self.FADING_RATE
-        self.H *= self.FADING_RATE
-        self.W *= self.FADING_RATE
+        # self.H *= self.FADING_RATE
+        # self.W *= self.FADING_RATE
 
 ################################################################################################
 ####################################### Right radar #############################################
@@ -222,6 +222,9 @@ class RightRadar(Radar):
                 
                 # Update trace
                 self.traces[target].update()
+
+                # Update plot
+                self.parent().navigator.plot_screen.update(self.traces)
 
                 # Tracking box
                 if target == self.parent().tracking_target:
