@@ -1,0 +1,7 @@
+numpy
+scipy
+filterpy
+matplotlib
+ipykernel
+PyQt5
+opencv-python
