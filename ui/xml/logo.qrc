@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="left">
-    <file>../../assets/left_logo.png</file>
-    <file>../../assets/right_logo.png</file>
-  </qresource>
-</RCC>
