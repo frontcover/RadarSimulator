@@ -1,14 +1,4 @@
-import numpy as np
-from filterpy.common import Q_discrete_white_noise
-from filterpy.kalman import KalmanFilter
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QWidget
-import cv2
-
-import constant as C
-from option import Option
-from util import P, P_revert, R, dist, rphi_to_xy, gaussian_kernel_2d, vectorized_xy_to_rphi, CFARDetector1D
-from constant import A_RES, R_RES, GM_TRACE_LENGTH
+_RES, GM_TRACE_LENGTH
 
 class Radar(QWidget):
     """Base class"""
@@ -47,30 +37,7 @@ class Radar(QWidget):
         
         ## Draw landmark
         # Draw azimuth landmark
-        painter.setPen(QtGui.QColor(127, 127, 127))
-        for phi in [0, 45, 90, 135, 180, 225, 270, 315]:
-            p2 = rphi_to_xy(C.R_MAX, phi)
-            x1, y1 = P(0, 0)
-            x2, y2 = P(p2[0], p2[1])
-            painter.drawLine(x1, y1, x2, y2)
-        # Draw azimuth marker
-        painter.setPen(QtGui.QColor(0, 0, 0))
-        for phi in np.arange(0, 360, 15):
-            p2 = rphi_to_xy(C.R_MAX + 8, phi)
-            x2, y2 = P(p2[0] - 4, p2[1] - 2)
-            painter.drawText(x2, y2, f"{phi}")
-        # Draw radius landmark
-        painter.setBrush(QtCore.Qt.NoBrush)
-        painter.setPen(QtGui.QColor(127, 127, 127))
-        for r in [25, 50, 75]:
-            painter.drawEllipse(QtCore.QPointF(*P(0, 0)), R(r), R(r))
-
-        # Draw rotating line
-        p2 = rphi_to_xy(C.R_MAX, self.a)
-        painter.setPen(QtGui.QColor(0, 255, 0))
-        x1, y1 = P(0, 0)
-        x2, y2 = P(p2[0], p2[1])
-        painter.drawLine(x1, y1, x2, y2)
+        painter.setPen(QtGui.QColor(127, 127, 
 
     def draw_tracking_boxes(self, painter):
         painter.setBrush(QtCore.Qt.NoBrush)
